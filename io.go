@@ -39,6 +39,9 @@ type copier struct {
 // The returned Writer also implements io.ReaderFrom to allow io.Copy to select
 // the best strategy while still checking the context state before every chunk transfer.
 func NewWriter(ctx context.Context, w io.Writer) io.Writer {
+	if w, ok := w.(*copier); ok && ctx == w.ctx {
+		return w
+	}
 	return &copier{writer{ctx: ctx, w: w}}
 }
 
@@ -61,6 +64,9 @@ type reader struct {
 //
 // Context state is checked BEFORE every Read.
 func NewReader(ctx context.Context, r io.Reader) io.Reader {
+	if r, ok := r.(*reader); ok && ctx == r.ctx {
+		return r
+	}
 	return &reader{ctx: ctx, r: r}
 }
 
