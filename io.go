@@ -56,7 +56,7 @@ type reader struct {
 	r   io.Reader
 }
 
-// NewReader wraps an io.Reader to handle context cancellation.NewReader
+// NewReader wraps an io.Reader to handle context cancellation.
 //
 // Context state is checked BEFORE every Read.
 func NewReader(ctx context.Context, r io.Reader) io.Reader {
