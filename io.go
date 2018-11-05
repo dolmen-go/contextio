@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package contextio provides Writer and Reader that stops accepting data when an attached context is canceled.
+// Package contextio provides Writer and Reader that stop accepting/providing
+// data when an attached context is canceled.
 package contextio
 
 import (
@@ -35,8 +36,8 @@ type copier struct {
 //
 // Context state is checked BEFORE every Write.
 //
-// The returned Writer also implements io.ReaderFrom to allow io.Copy to select the best strategy
-// while still checking the context state before every chunk transfer.
+// The returned Writer also implements io.ReaderFrom to allow io.Copy to select
+// the best strategy while still checking the context state before every chunk transfer.
 func NewWriter(ctx context.Context, w io.Writer) io.Writer {
 	return &copier{writer{ctx: ctx, w: w}}
 }
