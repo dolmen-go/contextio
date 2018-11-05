@@ -1,8 +1,8 @@
-# ctxwriter - Context-aware Writer
+# contextio - Context-aware I/O streams for Go
 
-[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/dolmen-go/ctxwriter)
-[![Travis-CI](https://api.travis-ci.org/dolmen-go/ctxwriter.svg?branch=master)](https://travis-ci.org/dolmen-go/ctxwriter)
-[![Go Report Card](https://goreportcard.com/badge/github.com/dolmen-go/ctxwriter)](https://goreportcard.com/report/github.com/dolmen-go/ctxwriter)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/dolmen-go/contextio)
+[![Travis-CI](https://api.travis-ci.org/dolmen-go/contextio.svg?branch=master)](https://travis-ci.org/dolmen-go/contextio)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dolmen-go/contextio)](https://goreportcard.com/report/github.com/dolmen-go/contextio)
 
 Author: [@dolmen](https://github.com/dolmen)  (Olivier Mengué).
 

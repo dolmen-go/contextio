@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package ctxwriter provides a Writer that stops accepting data when an attached context is canceled.
-package ctxwriter
+// Package contextio provides Writer and Reader that stops accepting data when an attached context is canceled.
+package contextio
 
 import (
 	"context"
@@ -31,17 +31,17 @@ type copier struct {
 	writer
 }
 
-// New wraps an io.Writer to handle context cancellation.
+// NewWriter wraps an io.Writer to handle context cancellation.
 //
-// Context state is checked BEFORE any Write.
-func New(ctx context.Context, w io.Writer) io.Writer {
+// Context state is checked BEFORE every Write.
+//
+// The returned Writer also implements io.ReaderFrom to allow io.Copy to select the best strategy
+// while still checking the context state before every chunk transfer.
+func NewWriter(ctx context.Context, w io.Writer) io.Writer {
 	return &copier{writer{ctx: ctx, w: w}}
 }
 
 // Write implements io.Writer, but with context awareness.
-//
-// The returned Writer also implements io.ReadFrom to allow io.Copy to select the best strategy
-// while still checking the context state before every chunk transfer.
 func (w *writer) Write(p []byte) (n int, err error) {
 	select {
 	case <-w.ctx.Done():
@@ -54,6 +54,13 @@ func (w *writer) Write(p []byte) (n int, err error) {
 type reader struct {
 	ctx context.Context
 	r   io.Reader
+}
+
+// NewReader wraps an io.Reader to handle context cancellation.NewReader
+//
+// Context state is checked BEFORE every Read.
+func NewReader(ctx context.Context, r io.Reader) io.Reader {
+	return &reader{ctx: ctx, r: r}
 }
 
 func (r *reader) Read(p []byte) (n int, err error) {

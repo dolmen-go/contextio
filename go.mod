@@ -1,1 +1,1 @@
-module github.com/dolmen-go/ctxwriter
+module github.com/dolmen-go/contextio
