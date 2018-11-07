@@ -96,3 +96,24 @@ func (w *copier) ReadFrom(r io.Reader) (n int64, err error) {
 		return io.Copy(&w.writer, r)
 	}
 }
+
+// NewCloser wraps an io.Reader to handle context cancellation.
+//
+// Context state is checked BEFORE any Close.
+func NewCloser(ctx context.Context, c io.Closer) io.Closer {
+	return &closer{ctx: ctx, c: c}
+}
+
+type closer struct {
+	ctx context.Context
+	c   io.Closer
+}
+
+func (c *closer) Close() error {
+	select {
+	case <-c.ctx.Done():
+		return c.ctx.Err()
+	default:
+		return c.c.Close()
+	}
+}
