@@ -3,6 +3,7 @@ package contextio_test
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -10,6 +11,48 @@ import (
 
 	"github.com/dolmen-go/contextio"
 )
+
+func Example_copy() {
+	// interrupt context after 500ms
+	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
+	defer cancel()
+	// interrupt context with SIGTERM (CTRL+C)
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, os.Interrupt)
+	go func() {
+		<-sigs
+		cancel()
+	}()
+
+	fIn, err := os.Open("/dev/zero")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fIn.Close()
+
+	fOut, err := os.OpenFile("/dev/null", os.O_WRONLY, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fOut.Close()
+
+	// Reader that fails when context is canceled
+	in := contextio.NewReader(ctx, fIn)
+	// Writer that fails when context is canceled
+	out := contextio.NewWriter(ctx, fOut)
+
+	n, err := io.Copy(out, in)
+	log.Println(n, "bytes copied.")
+	if err != nil {
+		fmt.Println("Err:", err)
+	}
+
+	fmt.Println("Closing.")
+
+	// Output:
+	// Err: context deadline exceeded
+	// Closing.
+}
 
 func ExampleNewWriter() {
 	// interrupt context after 500ms
