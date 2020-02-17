@@ -10,7 +10,7 @@ import (
 
 func TestWriter(t *testing.T) {
 	var buf bytes.Buffer
-	w := contextio.NewWriter(context.TODO(), &buf)
+	w := contextio.NewWriter(context.Background(), &buf)
 	n, err := w.Write([]byte("hello"))
 	if err != nil {
 		t.Fatal(err)
@@ -24,7 +24,8 @@ func TestWriter(t *testing.T) {
 
 	buf.Reset()
 
-	ctx, cancel := context.WithCancel(context.TODO())
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	w = contextio.NewWriter(ctx, &buf)
 	n, err = w.Write([]byte("hello"))
 	if err != nil {
