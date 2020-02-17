@@ -30,7 +30,7 @@ func Example_copy() {
 	}
 	defer fIn.Close()
 
-	fOut, err := os.OpenFile("/dev/null", os.O_WRONLY, 0)
+	fOut, err := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,7 +66,7 @@ func ExampleNewWriter() {
 		cancel()
 	}()
 
-	f, err := os.OpenFile("/dev/null", os.O_WRONLY, 0)
+	f, err := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
