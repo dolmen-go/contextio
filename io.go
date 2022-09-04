@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package contextio provides Writer and Reader that stop accepting/providing
+// Package contextio provides [io.Writer] and [io.Reader] that stop accepting/providing
 // data when an attached context is canceled.
 package contextio
 
@@ -32,11 +32,11 @@ type copier struct {
 	writer
 }
 
-// NewWriter wraps an io.Writer to handle context cancellation.
+// NewWriter wraps an [io.Writer] to handle context cancellation.
 //
 // Context state is checked BEFORE every Write.
 //
-// The returned Writer also implements io.ReaderFrom to allow io.Copy to select
+// The returned Writer also implements [io.ReaderFrom] to allow [io.Copy] to select
 // the best strategy while still checking the context state before every chunk transfer.
 func NewWriter(ctx context.Context, w io.Writer) io.Writer {
 	if w, ok := w.(*copier); ok && ctx == w.ctx {
@@ -45,7 +45,7 @@ func NewWriter(ctx context.Context, w io.Writer) io.Writer {
 	return &copier{writer{ctx: ctx, w: w}}
 }
 
-// Write implements io.Writer, but with context awareness.
+// Write implements [io.Writer], but with context awareness.
 func (w *writer) Write(p []byte) (n int, err error) {
 	select {
 	case <-w.ctx.Done():
@@ -60,7 +60,7 @@ type reader struct {
 	r   io.Reader
 }
 
-// NewReader wraps an io.Reader to handle context cancellation.
+// NewReader wraps an [io.Reader] to handle context cancellation.
 //
 // Context state is checked BEFORE every Read.
 func NewReader(ctx context.Context, r io.Reader) io.Reader {
@@ -79,7 +79,7 @@ func (r *reader) Read(p []byte) (n int, err error) {
 	}
 }
 
-// ReadFrom implements interface io.ReaderFrom, but with context awareness.
+// ReadFrom implements interface [io.ReaderFrom], but with context awareness.
 //
 // This should allow efficient copying allowing writer or reader to define the chunk size.
 func (w *copier) ReadFrom(r io.Reader) (n int64, err error) {
@@ -97,7 +97,7 @@ func (w *copier) ReadFrom(r io.Reader) (n int64, err error) {
 	}
 }
 
-// NewCloser wraps an io.Reader to handle context cancellation.
+// NewCloser wraps an [io.Reader] to handle context cancellation.
 //
 // Context state is checked BEFORE any Close.
 func NewCloser(ctx context.Context, c io.Closer) io.Closer {
